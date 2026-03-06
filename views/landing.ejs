@@ -1,38 +1,7 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Welcome | Crate Raters</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/stylesheets/landing.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript" async></script>
-        <link rel="stylesheet" href="/css/landing.css">
-    </head>
-    <body>
-    
-    <div class="container">
-        <% if(error && error.length > 0){ %>
-            <div class="alert alert-danger" role="alert">
-                <%= error %>
-            </div>
-        <% } %>
-        <% if(success && success.length > 0){ %>
-            <div class="alert alert-success" role="alert">
-                <%= success %>
-            </div>
-        <% } %>
-    </div>
-    
-    <div id="landing-header">
-    <h1>welcome to Crate Raters</h1>
-    <a href="/records" class="btn btn-lg btn-default">View All Records</a>
-    </div>
-    
-    <ul class="slideshow">
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
-
-<%- include("partials/footer") %>
+<div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+    <h1 class="text-5xl font-bold mb-6">Welcome to CrateRaters</h1>
+    <p class="text-xl text-gray-400 mb-8">Curate your vinyl collection. Discover what others are spinning.</p>
+    <a href="/records" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors">
+        View All Records
+    </a>
+</div>

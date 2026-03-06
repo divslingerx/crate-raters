@@ -1,19 +1,16 @@
-<%- include("../partials/header") %>
-<div class="container">
-    <div class="row">
-        <h1 style="text-align: center">Edit Comment</h1>
-        <div style="width: 30%; margin: 25px auto;">
-            <form action="/records/<%= record_id %>/comments/<%= comment._id %>?_method=PUT" method="POST">
-                <div class="form-group">
-                    <input class="form-control" type="text" name="comment[text]" value="<%= comment.text %>">
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-lg btn-primary btn-block">Submit!</button>
-                </div>
-            </form>
-            <a href="/records">Go Back</a>
-        </div>
-    </div>
-</div>
-<%- include("../partials/footer") %>
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold text-white mb-6">Edit Comment</h1>
 
+    <form action="/records/<%= recordId %>/comments/<%= comment.id %>?_method=PUT" method="POST" class="space-y-6">
+        <div>
+            <label for="text" class="block text-sm font-medium text-gray-300 mb-1">Comment</label>
+            <textarea id="text" name="text" rows="4" required
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"><%= comment.text %></textarea>
+        </div>
+
+        <div class="flex gap-3">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium transition-colors">Update</button>
+            <a href="/records/<%= recordId %>" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">Cancel</a>
+        </div>
+    </form>
+</div>

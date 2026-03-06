@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrateRaters</title>
+    <link rel="stylesheet" href="/dist/main.css">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body class="min-h-screen bg-gray-950 text-gray-100">
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="/" class="text-xl font-bold text-white">CrateRaters</a>
+            <div class="flex gap-4 items-center">
+                <a href="/records" class="text-gray-300 hover:text-white">Records</a>
+                <% if (user) { %>
+                    <span class="text-gray-400"><%= user.name %></span>
+                    <a href="/logout" class="text-gray-300 hover:text-white">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="text-gray-300 hover:text-white">Login</a>
+                    <a href="/register" class="text-gray-300 hover:text-white">Register</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        <%- body %>
+    </main>
+
+    <footer class="bg-gray-900 border-t border-gray-800 px-6 py-4 mt-auto">
+        <div class="max-w-6xl mx-auto text-center text-gray-500 text-sm">
+            &copy; 2026 CrateRaters
+        </div>
+    </footer>
+<% if (typeof livereload !== 'undefined' && livereload) { %>
+    <script src="http://localhost:35729/livereload.js?snipver=1"></script>
+<% } %>
+</body>
+</html>

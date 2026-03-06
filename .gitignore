@@ -1,3 +1,7 @@
+# Claude Code
+.claude/
+CLAUDE.md
+
 # Logs
 logs
 *.log
@@ -142,3 +146,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Build output
+public/dist/

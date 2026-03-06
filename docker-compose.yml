@@ -1,10 +1,14 @@
 services:
-  mongo:
-    image: mongo:8
+  postgres:
+    image: postgres:17
     ports:
-      - "27017:27017"
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: crate_raters
+      POSTGRES_PASSWORD: crate_raters
+      POSTGRES_DB: crate_raters
     volumes:
-      - mongo-data:/data/db
+      - pg-data:/var/lib/postgresql/data
 
 volumes:
-  mongo-data:
+  pg-data:

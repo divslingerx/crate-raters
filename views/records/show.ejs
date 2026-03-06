@@ -1,59 +1,75 @@
-<%- include("../partials/header") %>
-<div class="container">
-    <div class="row">
-        <div class="col-md-3">
-            <p class="lead">YelpCamp</p>
-            <div class="list-group">
-                <li class="list-group-item active">Info 1</li>
-                <li class="list-group-item">Info 2</li>
-                <li class="list-group-item">Info 3</li>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="thumbnail">
-                <img class="image-responsive" src="<%= record.image %>">
-                <div class="caption-full">
-                    <h4 class="pull-right"><%= record.artist %></h4>
-                    <h4><a><%= record.album %></a></h4>
-                    <h1>Samples Found On This Record:</h1>
-                    <p><%= record.found %></p>
-                    <p>
-                        <em>Submitted By <%= record.author.username %></em>
-                    </p>
-                    <% if(currentUser && record.author.id.equals(currentUser._id)){ %>
-                        <a class="btn btn-xs btn-warning" href="/records/<%= record._id %>/edit">Edit</a>
-                        <form id="delete-form" action="/records/<%= record._id %>?_method=DELETE" method="POST">
-                            <button class="btn btn-xs btn-danger">Delete</button>
+<div class="max-w-4xl mx-auto">
+    <div class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
+        <div class="md:flex">
+            <% if (record.image) { %>
+                <div class="md:w-1/2">
+                    <img src="<%= record.image %>" alt="<%= record.album %>" class="w-full aspect-square object-cover">
+                </div>
+            <% } %>
+            <div class="p-6 md:w-1/2 flex flex-col justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-2"><%= record.album %></h1>
+                    <p class="text-xl text-gray-300 mb-4"><%= record.artist %></p>
+                    <% if (record.year) { %>
+                        <p class="text-gray-400 mb-2"><span class="font-medium text-gray-300">Year:</span> <%= record.year %></p>
+                    <% } %>
+                    <% if (record.found) { %>
+                        <p class="text-gray-400 mb-4"><span class="font-medium text-gray-300">Found:</span> <%= record.found %></p>
+                    <% } %>
+                </div>
+                <% if (user && user.id === record.userId) { %>
+                    <div class="flex gap-3 mt-4">
+                        <a href="/records/<%= record.id %>/edit" class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">Edit</a>
+                        <button
+                            hx-delete="/records/<%= record.id %>"
+                            hx-confirm="Are you sure?"
+                            hx-swap="none"
+                            class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                        >Delete</button>
+                        <form action="/records/<%= record.id %>?_method=DELETE" method="POST" class="inline hidden" id="delete-fallback">
+                            <button type="submit" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">Delete</button>
                         </form>
-                    <% }%>
-                </div>
-            </div>
-            <div class="well">
-                <div class="text-right">
-                    <a class="btn btn-success" href="/records/<%= record._id %>/comments/new">Add New Comment</a>
-                </div>
-                <hr>
-                <% record.comments.forEach(function(comment){ %>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <strong><%= comment.author.username %></strong>
-                            <span class="pull-right">10 days ago</span>
-                            <p>
-                                <%= comment.text %> 
-                            </p>
-                        <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
-                            <a class="btn btn-xs btn-warning" 
-                               href="/records/<%=record._id %>/comments/<%=comment._id %>/edit">Edit</a>
-                            <form id="delete-form" action="/records/<%=record._id %>/comments/<%=comment._id %>?_method=DELETE" method="POST">
-                                <input type="submit" class="btn btn-xs btn-danger" value="Delete">
-                            </form>
-                        <% } %>
-                        </div>
                     </div>
-                <% }) %>
+                <% } %>
             </div>
         </div>
     </div>
-</div>
 
-<%- include("../partials/footer") %>
+    <!-- Comments Section -->
+    <div class="mt-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-white">Comments</h2>
+        </div>
+        <% if (user) { %>
+            <form
+                hx-post="/records/<%= record.id %>/comments"
+                hx-target="#comments-list"
+                hx-swap="afterbegin"
+                hx-on::after-request="if(event.detail.successful) this.reset()"
+                action="/records/<%= record.id %>/comments"
+                method="POST"
+                class="mb-6"
+            >
+                <div class="flex gap-3">
+                    <input type="text" name="text" placeholder="Add a comment..." required
+                        class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">Add Comment</button>
+                </div>
+            </form>
+        <% } %>
+        <div id="comments-list" class="space-y-4">
+            <% if (record.comments && record.comments.length > 0) { %>
+                <% record.comments.forEach(function(comment) { %>
+                    <%- include('../partials/comment', { comment, recordId: record.id, user }) %>
+                <% }); %>
+            <% } %>
+        </div>
+        <% if (!record.comments || record.comments.length === 0) { %>
+            <p class="text-gray-500 no-comments">No comments yet.</p>
+        <% } %>
+    </div>
+
+    <div class="mt-6">
+        <a href="/records" class="text-indigo-400 hover:text-indigo-300">Back to Records</a>
+    </div>
+</div>

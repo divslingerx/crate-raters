@@ -2,28 +2,52 @@
   "name": "crate-raters",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "type": "module",
+  "main": "src/app.ts",
   "scripts": {
-    "start": "node app.js",
+    "start": "node dist/app.js",
+    "dev": "docker compose up -d && concurrently \"pnpm run dev:css\" \"pnpm run dev:server\"",
+    "dev:server": "tsx watch src/app.ts",
+    "dev:css": "vite build --watch",
+    "build": "vite build && tsc",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx src/db/seed.ts",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
-    "dev": "docker compose up -d && node app.js",
-    "seed": "node -e \"require('./seeds')()\""
+    "db:reset": "docker compose down -v",
+    "test": "node --test --import tsx 'src/**/*.test.ts'"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^2.2.2",
-    "connect-flash": "^0.1.1",
+    "better-auth": "^1.5.4",
     "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
     "ejs": "^5.0.1",
     "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.19.0",
     "method-override": "^3.0.0",
-    "mongoose": "^9.2.4",
-    "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^9.0.1"
+    "pg": "^8.20.0"
   },
-  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd"
+  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd",
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.1",
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.6",
+    "@types/express-ejs-layouts": "^2.5.4",
+    "@types/livereload": "^0.9.5",
+    "@types/method-override": "^3.0.0",
+    "@types/node": "^25.3.5",
+    "@types/pg": "^8.18.0",
+    "concurrently": "^9.2.1",
+    "drizzle-kit": "^0.31.9",
+    "livereload": "^0.10.3",
+    "tailwindcss": "^4.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
 }
