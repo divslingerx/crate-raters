@@ -7,10 +7,15 @@ import { fileURLToPath } from "url";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth.js";
 import { getSession } from "./middleware/index.js";
+import { getFileUrl, ensureBucket } from "./lib/minio.js";
 import indexRoutes from "./routes/index.js";
 import authRoutes from "./routes/auth.js";
-import recordRoutes from "./routes/records.js";
+import releaseRoutes from "./routes/releases.js";
 import commentRoutes from "./routes/comments.js";
+import likeRoutes from "./routes/likes.js";
+import wantRoutes from "./routes/wants.js";
+import userRoutes from "./routes/users.js";
+import feedRoutes from "./routes/feed.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,14 +59,39 @@ app.use(methodOverride("_method"));
 // Session middleware (populates res.locals.user for all views)
 app.use(getSession);
 
+// Image URL resolver — resolves MinIO keys to full URLs, passes through http URLs
+app.use((_req, res, next) => {
+  res.locals.resolveImage = (value: string | null | undefined): string | null => {
+    if (!value) return null;
+    if (value.startsWith("http")) return value;
+    return getFileUrl(value);
+  };
+  next();
+});
+
 // Routes
 app.use("/", authRoutes);
-app.use("/records", recordRoutes);
-app.use("/records/:id/comments", commentRoutes);
+app.use("/releases", releaseRoutes);
+app.use("/releases/:id/comments", commentRoutes);
+app.use("/releases", likeRoutes);
+app.use("/releases", wantRoutes);
+app.use("/wants", wantRoutes);
+app.use("/users", userRoutes);
+app.use("/feed", feedRoutes);
 app.use("/", indexRoutes);
 
 export { app };
 
-app.listen(port, () => {
-  console.log(`CrateRaters running on port ${port}`);
-});
+// Ensure MinIO bucket exists, then start server
+ensureBucket()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`CrateRaters running on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.warn("MinIO not available, starting without file uploads:", err.message);
+    app.listen(port, () => {
+      console.log(`CrateRaters running on port ${port} (without MinIO)`);
+    });
+  });

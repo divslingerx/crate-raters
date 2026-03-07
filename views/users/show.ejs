@@ -1,0 +1,47 @@
+<div class="max-w-4xl mx-auto">
+    <!-- Profile Header -->
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-8">
+        <div class="flex items-start gap-6">
+            <div class="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 overflow-hidden flex-shrink-0">
+                <% if (profile && profile.avatarUrl) { %>
+                    <img src="<%= resolveImage(profile.avatarUrl) %>" alt="<%= targetUser.name %>" class="w-full h-full object-cover">
+                <% } else { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0" />
+                    </svg>
+                <% } %>
+            </div>
+            <div class="flex-1">
+                <div class="flex items-center gap-4 mb-2">
+                    <h1 class="text-2xl font-bold text-white"><%= targetUser.name %></h1>
+                    <% if (user && user.id !== targetUser.id) { %>
+                        <%- include('../partials/follow-button', { targetUser, isFollowing }) %>
+                    <% } %>
+                    <% if (user && user.id === targetUser.id) { %>
+                        <a href="/users/<%= targetUser.id %>/edit" class="px-4 py-1.5 rounded-lg text-sm font-medium bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors">Edit Profile</a>
+                    <% } %>
+                </div>
+                <% if (profile && profile.bio) { %>
+                    <p class="text-gray-400 mb-3"><%= profile.bio %></p>
+                <% } %>
+                <div class="flex gap-6 text-sm">
+                    <span class="text-gray-400"><span class="font-semibold text-white"><%= releaseCount %></span> releases</span>
+                    <span class="text-gray-400"><span class="font-semibold text-white"><%= followerCount %></span> followers</span>
+                    <span class="text-gray-400"><span class="font-semibold text-white"><%= followingCount %></span> following</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection -->
+    <h2 class="text-xl font-bold text-white mb-4">Collection</h2>
+    <% if (releases.length === 0) { %>
+        <p class="text-gray-500">No releases in collection yet.</p>
+    <% } else { %>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <% releases.forEach(function(release) { %>
+                <%- include('../partials/release-card', { release }) %>
+            <% }); %>
+        </div>
+    <% } %>
+</div>

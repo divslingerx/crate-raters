@@ -12,9 +12,16 @@
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <a href="/" class="text-xl font-bold text-white">CrateRaters</a>
             <div class="flex gap-4 items-center">
-                <a href="/records" class="text-gray-300 hover:text-white">Records</a>
                 <% if (user) { %>
-                    <span class="text-gray-400"><%= user.name %></span>
+                    <a href="/feed" class="text-gray-300 hover:text-white">Feed</a>
+                <% } %>
+                <a href="/releases" class="text-gray-300 hover:text-white">Releases</a>
+                <a href="/users" class="text-gray-300 hover:text-white">Users</a>
+                <% if (user) { %>
+                    <a href="/wants" class="text-gray-300 hover:text-white">Wishlist</a>
+                    <a href="/users/<%= user.id %>" class="flex items-center gap-2 text-gray-300 hover:text-white">
+                        <span><%= user.name %></span>
+                    </a>
                     <a href="/logout" class="text-gray-300 hover:text-white">Logout</a>
                 <% } else { %>
                     <a href="/login" class="text-gray-300 hover:text-white">Login</a>

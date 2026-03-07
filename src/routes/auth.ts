@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "../auth.js";
+import { db } from "../db/index.js";
+import { profiles } from "../db/schema.js";
 
 const router = Router();
 
@@ -26,7 +28,13 @@ router.post("/register", async (req, res) => {
       res.append("set-cookie", cookie);
     }
 
-    res.redirect("/records");
+    // Auto-create profile for the new user
+    const signUpData = await signUpResponse.json();
+    if (signUpData?.user?.id) {
+      await db.insert(profiles).values({ userId: signUpData.user.id }).onConflictDoNothing();
+    }
+
+    res.redirect("/releases");
   } catch (err: unknown) {
     const message =
       err instanceof Error ? err.message : "Registration failed";
@@ -60,7 +68,7 @@ router.post("/login", async (req, res) => {
       res.append("set-cookie", cookie);
     }
 
-    res.redirect("/records");
+    res.redirect("/releases");
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Login failed";
     res.status(401).render("login", { error: message });

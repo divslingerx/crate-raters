@@ -1,7 +1,7 @@
 <div class="max-w-2xl mx-auto">
-    <h1 class="text-3xl font-bold text-white mb-6">Add Comment to "<%= record.album %>"</h1>
+    <h1 class="text-3xl font-bold text-white mb-6">Add Comment to "<%= release.album %>"</h1>
 
-    <form action="/records/<%= record.id %>/comments" method="POST" class="space-y-6">
+    <form action="/releases/<%= release.id %>/comments" method="POST" class="space-y-6">
         <div>
             <label for="text" class="block text-sm font-medium text-gray-300 mb-1">Comment</label>
             <textarea id="text" name="text" rows="4" required
@@ -11,7 +11,7 @@
 
         <div class="flex gap-3">
             <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium transition-colors">Submit</button>
-            <a href="/records/<%= record.id %>" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">Cancel</a>
+            <a href="/releases/<%= release.id %>" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">Cancel</a>
         </div>
     </form>
 </div>

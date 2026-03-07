@@ -1,0 +1,23 @@
+<a href="/releases/<%= release.id %>" class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-600 transition-colors">
+    <% if (release.image) { %>
+        <img src="<%= resolveImage(release.image) %>" alt="<%= release.album %>" class="w-full aspect-square object-cover">
+    <% } else { %>
+        <div class="w-full aspect-square bg-gray-800 flex items-center justify-center text-gray-500">No Image</div>
+    <% } %>
+    <div class="p-4">
+        <h2 class="font-semibold text-white truncate"><%= release.album %></h2>
+        <p class="text-gray-400 text-sm"><%= release.artist %></p>
+        <div class="flex items-center gap-2 mt-1">
+            <% if (release.year) { %>
+                <span class="text-gray-500 text-xs"><%= release.year %></span>
+            <% } %>
+            <% if (release.format) { %>
+                <span class="text-xs px-1.5 py-0.5 rounded-full
+                    <%= release.format === 'vinyl' ? 'bg-amber-900/50 text-amber-400' : '' %>
+                    <%= release.format === 'cd' ? 'bg-blue-900/50 text-blue-400' : '' %>
+                    <%= release.format === 'cassette' ? 'bg-purple-900/50 text-purple-400' : '' %>
+                "><%= release.format === 'cd' ? 'CD' : release.format.charAt(0).toUpperCase() + release.format.slice(1) %></span>
+            <% } %>
+        </div>
+    </div>
+</a>

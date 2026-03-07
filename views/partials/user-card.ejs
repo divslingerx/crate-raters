@@ -1,0 +1,19 @@
+<% users.forEach(function(u) { %>
+    <a href="/users/<%= u.id %>" class="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-gray-600 transition-colors flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 overflow-hidden flex-shrink-0">
+            <% if (u.profile && u.profile.avatarUrl) { %>
+                <img src="<%= resolveImage(u.profile.avatarUrl) %>" alt="<%= u.name %>" class="w-full h-full object-cover">
+            <% } else { %>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0" />
+                </svg>
+            <% } %>
+        </div>
+        <div>
+            <p class="font-semibold text-white"><%= u.name %></p>
+            <% if (u.profile && u.profile.bio) { %>
+                <p class="text-gray-500 text-sm truncate max-w-[200px]"><%= u.profile.bio %></p>
+            <% } %>
+        </div>
+    </a>
+<% }); %>

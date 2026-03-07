@@ -1,0 +1,19 @@
+<div>
+    <label class="block text-sm font-medium text-gray-300 mb-2">Genres</label>
+    <div class="flex flex-wrap gap-2">
+        <% if (typeof allTags !== 'undefined' && allTags) { %>
+            <% allTags.forEach(function(tag) { %>
+                <label class="cursor-pointer">
+                    <input type="checkbox" name="tagIds[]" value="<%= tag.id %>"
+                        class="hidden peer"
+                        <%= (typeof selectedTagIds !== 'undefined' && selectedTagIds && selectedTagIds.includes(tag.id)) ? 'checked' : '' %>>
+                    <span class="inline-block px-3 py-1 rounded-full text-sm border border-gray-700 text-gray-400
+                        peer-checked:bg-indigo-600 peer-checked:border-indigo-500 peer-checked:text-white
+                        hover:border-gray-500 transition-colors">
+                        <%= tag.name %>
+                    </span>
+                </label>
+            <% }); %>
+        <% } %>
+    </div>
+</div>

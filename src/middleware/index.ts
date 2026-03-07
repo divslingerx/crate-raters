@@ -3,12 +3,8 @@ import { fromNodeHeaders } from "better-auth/node";
 import { eq } from "drizzle-orm";
 import { auth } from "../auth.js";
 import { db } from "../db/index.js";
-import { records, comments } from "../db/schema.js";
+import { releases, comments } from "../db/schema.js";
 
-/**
- * Global middleware: attaches session and user to res.locals
- * so views can check authentication state.
- */
 export async function getSession(
   req: Request,
   res: Response,
@@ -27,9 +23,6 @@ export async function getSession(
   next();
 }
 
-/**
- * Route middleware: redirects unauthenticated users to /login.
- */
 export function isLoggedIn(req: Request, res: Response, next: NextFunction) {
   if (!res.locals.user) {
     return res.redirect("/login");
@@ -37,11 +30,7 @@ export function isLoggedIn(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-/**
- * Route middleware: checks that the current user owns the record.
- * Attaches the record to res.locals.record if authorized.
- */
-export async function checkRecordOwnership(
+export async function checkReleaseOwnership(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -49,24 +38,20 @@ export async function checkRecordOwnership(
   const id = req.params.id as string;
   const result = await db
     .select()
-    .from(records)
-    .where(eq(records.id, id));
+    .from(releases)
+    .where(eq(releases.id, id));
 
-  const record = result[0];
+  const release = result[0];
 
-  if (!record || record.userId !== res.locals.user?.id) {
+  if (!release || release.userId !== res.locals.user?.id) {
     res.redirect("back");
     return;
   }
 
-  res.locals.record = record;
+  res.locals.release = release;
   next();
 }
 
-/**
- * Route middleware: checks that the current user owns the comment.
- * Attaches the comment to res.locals.comment if authorized.
- */
 export async function checkCommentOwnership(
   req: Request,
   res: Response,
@@ -86,5 +71,17 @@ export async function checkCommentOwnership(
   }
 
   res.locals.comment = comment;
+  next();
+}
+
+export async function checkProfileOwnership(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  if (req.params.id !== res.locals.user?.id) {
+    res.redirect("back");
+    return;
+  }
   next();
 }

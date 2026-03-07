@@ -1,0 +1,167 @@
+<div class="max-w-md mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-center">Edit Release</h1>
+    <form action="/releases/<%= release.id %>?_method=PUT" method="POST" class="space-y-4">
+        <div>
+            <label for="artist" class="block text-sm font-medium text-gray-300 mb-1">Artist</label>
+            <input type="text" id="artist" name="artist" required
+                value="<%= release.artist %>"
+                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label for="album" class="block text-sm font-medium text-gray-300 mb-1">Album</label>
+            <input type="text" id="album" name="album" required
+                value="<%= release.album %>"
+                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label for="image" class="block text-sm font-medium text-gray-300 mb-1">Image URL</label>
+            <input type="url" id="image" name="image"
+                value="<%= release.image || '' %>"
+                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label for="year" class="block text-sm font-medium text-gray-300 mb-1">Year</label>
+            <input type="text" id="year" name="year"
+                value="<%= release.year || '' %>"
+                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label for="found" class="block text-sm font-medium text-gray-300 mb-1">Where Found</label>
+            <input type="text" id="found" name="found"
+                value="<%= release.found || '' %>"
+                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <!-- Format Selection -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Format</label>
+            <div class="flex gap-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="format" value="vinyl" <%= release.format === 'vinyl' ? 'checked' : '' %>
+                        class="text-indigo-500 focus:ring-indigo-500"
+                        onchange="toggleFormatFields()">
+                    <span class="text-gray-300">Vinyl</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="format" value="cd" <%= release.format === 'cd' ? 'checked' : '' %>
+                        class="text-indigo-500 focus:ring-indigo-500"
+                        onchange="toggleFormatFields()">
+                    <span class="text-gray-300">CD</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="format" value="cassette" <%= release.format === 'cassette' ? 'checked' : '' %>
+                        class="text-indigo-500 focus:ring-indigo-500"
+                        onchange="toggleFormatFields()">
+                    <span class="text-gray-300">Cassette</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Vinyl-specific fields -->
+        <div id="vinyl-fields" class="<%= release.format !== 'vinyl' ? 'hidden' : '' %>">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="vinylSize" class="block text-sm font-medium text-gray-300 mb-1">Size</label>
+                    <select id="vinylSize" name="vinylSize"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Select size</option>
+                        <option value="LP" <%= release.vinylSize === 'LP' ? 'selected' : '' %>>LP</option>
+                        <option value='12"' <%= release.vinylSize === '12"' ? 'selected' : '' %>>12"</option>
+                        <option value='7"' <%= release.vinylSize === '7"' ? 'selected' : '' %>>7"</option>
+                        <option value='10"' <%= release.vinylSize === '10"' ? 'selected' : '' %>>10"</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="color" class="block text-sm font-medium text-gray-300 mb-1">Color</label>
+                    <input type="text" id="color" name="color"
+                        value="<%= release.color || '' %>"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Black, Red splatter, etc.">
+                </div>
+            </div>
+            <div class="mt-4">
+                <label for="matrix" class="block text-sm font-medium text-gray-300 mb-1">Matrix / Runout</label>
+                <input type="text" id="matrix" name="matrix"
+                    value="<%= release.matrix || '' %>"
+                    class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Matrix/runout etchings">
+            </div>
+        </div>
+
+        <!-- Cassette-specific fields -->
+        <div id="cassette-fields" class="<%= release.format !== 'cassette' ? 'hidden' : '' %>">
+            <div>
+                <label for="tapeType" class="block text-sm font-medium text-gray-300 mb-1">Tape Type</label>
+                <select id="tapeType" name="tapeType"
+                    class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">Select type</option>
+                    <option value="normal" <%= release.tapeType === 'normal' ? 'selected' : '' %>>Normal (Type I)</option>
+                    <option value="chrome" <%= release.tapeType === 'chrome' ? 'selected' : '' %>>Chrome (Type II)</option>
+                    <option value="metal" <%= release.tapeType === 'metal' ? 'selected' : '' %>>Metal (Type IV)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Shared pressing details -->
+        <div class="border-t border-gray-800 pt-4 mt-4">
+            <p class="text-sm font-medium text-gray-400 mb-3">Pressing Details</p>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="label" class="block text-sm font-medium text-gray-300 mb-1">Label</label>
+                    <input type="text" id="label" name="label"
+                        value="<%= release.label || '' %>"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Label name">
+                </div>
+                <div>
+                    <label for="catalogNumber" class="block text-sm font-medium text-gray-300 mb-1">Cat #</label>
+                    <input type="text" id="catalogNumber" name="catalogNumber"
+                        value="<%= release.catalogNumber || '' %>"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="ABC-123">
+                </div>
+                <div>
+                    <label for="country" class="block text-sm font-medium text-gray-300 mb-1">Country</label>
+                    <input type="text" id="country" name="country"
+                        value="<%= release.country || '' %>"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="US, UK, Japan, etc.">
+                </div>
+                <div>
+                    <label for="edition" class="block text-sm font-medium text-gray-300 mb-1">Edition</label>
+                    <select id="edition" name="edition"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Select edition</option>
+                        <option value="original" <%= release.edition === 'original' ? 'selected' : '' %>>Original</option>
+                        <option value="reissue" <%= release.edition === 'reissue' ? 'selected' : '' %>>Reissue</option>
+                        <option value="repress" <%= release.edition === 'repress' ? 'selected' : '' %>>Repress</option>
+                        <option value="promo" <%= release.edition === 'promo' ? 'selected' : '' %>>Promo</option>
+                        <option value="limited" <%= release.edition === 'limited' ? 'selected' : '' %>>Limited</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <label for="barcode" class="block text-sm font-medium text-gray-300 mb-1">Barcode</label>
+                <input type="text" id="barcode" name="barcode"
+                    value="<%= release.barcode || '' %>"
+                    class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="UPC barcode">
+            </div>
+        </div>
+
+        <%- include('../partials/tag-picker', { allTags, selectedTagIds }) %>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg font-medium transition-colors">
+            Update Release
+        </button>
+    </form>
+    <p class="text-center text-gray-400 mt-4"><a href="/releases/<%= release.id %>" class="text-indigo-400 hover:text-indigo-300">Cancel</a></p>
+</div>
+
+<script>
+function toggleFormatFields() {
+    const format = document.querySelector('input[name="format"]:checked').value;
+    document.getElementById('vinyl-fields').classList.toggle('hidden', format !== 'vinyl');
+    document.getElementById('cassette-fields').classList.toggle('hidden', format !== 'cassette');
+}
+</script>

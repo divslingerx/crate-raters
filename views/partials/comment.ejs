@@ -4,9 +4,9 @@
         <p class="text-sm text-gray-500">by <%= comment.author ? comment.author.name : 'Unknown' %></p>
         <% if (user && user.id === comment.userId) { %>
             <div class="flex gap-2">
-                <a href="/records/<%= recordId %>/comments/<%= comment.id %>/edit" class="text-yellow-500 hover:text-yellow-400 text-sm font-medium">Edit</a>
+                <a href="/releases/<%= releaseId %>/comments/<%= comment.id %>/edit" class="text-yellow-500 hover:text-yellow-400 text-sm font-medium">Edit</a>
                 <button
-                    hx-delete="/records/<%= recordId %>/comments/<%= comment.id %>"
+                    hx-delete="/releases/<%= releaseId %>/comments/<%= comment.id %>"
                     hx-target="closest .comment"
                     hx-swap="outerHTML"
                     hx-confirm="Are you sure?"

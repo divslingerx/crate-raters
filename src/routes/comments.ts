@@ -3,26 +3,27 @@ import { eq } from "drizzle-orm";
 import path from "path";
 import ejs from "ejs";
 import { db } from "../db/index.js";
-import { comments, records, user } from "../db/schema.js";
+import { comments, releases, user } from "../db/schema.js";
 import { isLoggedIn, checkCommentOwnership } from "../middleware/index.js";
+import { createActivity } from "../lib/activity.js";
 
 const router = Router({ mergeParams: true });
 
-// GET /records/:id/comments/new — new comment form
+// GET /releases/:id/comments/new — new comment form
 router.get("/new", isLoggedIn, async (req, res) => {
   const id = req.params.id as string;
-  const result = await db.select().from(records).where(eq(records.id, id));
-  const record = result[0];
+  const result = await db.select().from(releases).where(eq(releases.id, id));
+  const release = result[0];
 
-  if (!record) {
-    res.redirect("/records");
+  if (!release) {
+    res.redirect("/releases");
     return;
   }
 
-  res.render("comments/new", { record });
+  res.render("comments/new", { release });
 });
 
-// POST /records/:id/comments — create comment
+// POST /releases/:id/comments — create comment
 router.post("/", isLoggedIn, async (req, res) => {
   const id = req.params.id as string;
   const { text } = req.body;
@@ -32,12 +33,13 @@ router.post("/", isLoggedIn, async (req, res) => {
     .values({
       text,
       userId: res.locals.user.id,
-      recordId: id,
+      releaseId: id,
     })
     .returning();
 
+  await createActivity("commented", res.locals.user.id, { releaseId: id });
+
   if (req.headers["hx-request"]) {
-    // Fetch the author info for the partial
     const authorResult = await db
       .select({ id: user.id, name: user.name })
       .from(user)
@@ -49,16 +51,16 @@ router.post("/", isLoggedIn, async (req, res) => {
     const viewsDir = req.app.get("views");
     const html = await ejs.renderFile(
       path.join(viewsDir, "partials/comment.ejs"),
-      { comment: commentWithAuthor, recordId: id, user: res.locals.user }
+      { comment: commentWithAuthor, releaseId: id, user: res.locals.user }
     );
     res.send(html);
     return;
   }
 
-  res.redirect(`/records/${id}`);
+  res.redirect(`/releases/${id}`);
 });
 
-// GET /records/:id/comments/:commentId/edit — edit comment form
+// GET /releases/:id/comments/:commentId/edit — edit comment form
 router.get(
   "/:commentId/edit",
   isLoggedIn,
@@ -67,12 +69,12 @@ router.get(
     const id = req.params.id as string;
     res.render("comments/edit", {
       comment: res.locals.comment,
-      recordId: id,
+      releaseId: id,
     });
   },
 );
 
-// PUT /records/:id/comments/:commentId — update comment
+// PUT /releases/:id/comments/:commentId — update comment
 router.put(
   "/:commentId",
   isLoggedIn,
@@ -87,11 +89,11 @@ router.put(
       .set({ text })
       .where(eq(comments.id, commentId));
 
-    res.redirect(`/records/${id}`);
+    res.redirect(`/releases/${id}`);
   },
 );
 
-// DELETE /records/:id/comments/:commentId — delete comment
+// DELETE /releases/:id/comments/:commentId — delete comment
 router.delete(
   "/:commentId",
   isLoggedIn,
@@ -107,7 +109,7 @@ router.delete(
       return;
     }
 
-    res.redirect(`/records/${id}`);
+    res.redirect(`/releases/${id}`);
   },
 );
 

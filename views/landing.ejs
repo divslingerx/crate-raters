@@ -1,7 +1,14 @@
 <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
     <h1 class="text-5xl font-bold mb-6">Welcome to CrateRaters</h1>
-    <p class="text-xl text-gray-400 mb-8">Curate your vinyl collection. Discover what others are spinning.</p>
-    <a href="/records" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors">
-        View All Records
-    </a>
+    <p class="text-xl text-gray-400 mb-8 max-w-lg">The social network for physical music collectors. Share your vinyl, CD, and cassette collection. Discover what others are spinning.</p>
+    <div class="flex gap-4">
+        <a href="/releases" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors">
+            Browse Releases
+        </a>
+        <% if (!user) { %>
+            <a href="/register" class="bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors border border-gray-700">
+                Join Now
+            </a>
+        <% } %>
+    </div>
 </div>
